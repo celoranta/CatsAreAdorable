@@ -15,10 +15,13 @@
 @property (nonatomic) NSMutableSet *imageLocations;
 @property (nonatomic) NSMutableSet *imageMainSubjects;
 @property (nonatomic) NSSet *sortingSet;
-@property (nonatomic) NSString *sortingSelectorString;
+@property (nonatomic) NSString *sortingKey;
 
+// TESTING
+@property (nonatomic) NSString *sortingKeyResult;
+@property (nonatomic) NSMutableArray *sortingResults;
 
-@property (nonatomic) NSMutableArray *collectionViewObjectArray;
+@property (nonatomic) NSMutableArray <MyPhoto*> *collectionViewObjectArray;
 // @property (strong, nonatomic) CLE Placeholder for photoObject
 
 @end
@@ -79,7 +82,7 @@
     //Hard code grouping category
     
     self.sortingSet = self.imageLocations;
-    self.sortingSelectorString = @"imageLocation";
+    self.sortingKey = @"imageLocation";
     
     //Assign self as collection View data source
     self.basicPhotoCollectionView.dataSource = self;
@@ -114,14 +117,18 @@
     return qtySections;
 }
 
+     
+     
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
 
-    NSArray *tempArray = [self.sortingSet NSArray];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:self.sortingKey ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    NSArray *sortedArray = [self.collectionViewObjectArray sortedArrayUsingDescriptors:sortDescriptors];
     
-    NSInteger qtyObjectsInArray = [self.collectionViewObjectArray count];
+    [self calculatePhotosInSectionFromSortedArray:sortedArray];
     
-    return qtyObjectsInArray;
+    return 1;
 }
 
 //// The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
@@ -171,6 +178,31 @@
 //    self.basicPhotoLayout.footerReferenceSize = CGSizeMake(30, self.basicPhotoCollectionView.frame.size.height);
     
     return self.basicPhotoLayout;
+}
+
+
+-(NSMutableArray*)calculatePhotosInSectionFromSortedArray:(NSArray*)array
+{
+    SEL sortSelector = NSSelectorFromString(self.sortingKey);
+    NSMutableString* currentStringRegister = [[NSMutableString alloc]init];
+    NSMutableString* previousStringRegister = [[NSMutableString alloc]init];
+    NSMutableArray* sortedCount = [[NSMutableArray alloc]init];
+    int i = 1;
+  for(MyPhoto *photo in array)
+  {
+      currentStringRegister = [photo performSelector:sortSelector];
+      if ([currentStringRegister isEqualToString:previousStringRegister]) i++;
+          else
+          {
+              [sortedCount addObject:[NSNumber numberWithInt:i]];
+              i = 1;
+              
+          }
+      [previousStringRegister setString: currentStringRegister];
+
+    }
+    
+       return sortedCount;
 }
 
 #pragma mark - Roland's code
