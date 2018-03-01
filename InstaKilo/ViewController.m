@@ -14,7 +14,8 @@
 @property (nonatomic) NSMutableArray *imageArray;
 @property (nonatomic) NSMutableSet *imageLocations;
 @property (nonatomic) NSMutableSet *imageMainSubjects;
-@property (nonatomic) NSString *groupBy;
+@property (nonatomic) NSSet *sortingSet;
+@property (nonatomic) NSString *sortingSelectorString;
 
 
 @property (nonatomic) NSMutableArray *collectionViewObjectArray;
@@ -52,6 +53,11 @@
     //create array of collection objects and add to a property
     self.collectionViewObjectArray = [[NSMutableArray alloc]init];
     
+    
+    //load array with photo objects
+    [self.collectionViewObjectArray addObjectsFromArray:@[myPhoto01, myPhoto02,myPhoto03,myPhoto04,myPhoto05,myPhoto06,myPhoto07,myPhoto08,myPhoto09,myPhoto10]];
+    
+    
     //create a set of locations and add to a property
     self.imageLocations = [[NSMutableSet alloc]init];
     for(MyPhoto *photo in self.collectionViewObjectArray)
@@ -60,8 +66,6 @@
         [self.imageLocations addObject:location];
     }
     
-
-    
     //create a set of main subjects and add to a property
     self.imageMainSubjects = [[NSMutableSet alloc]init];
     for(MyPhoto *photo in self.collectionViewObjectArray)
@@ -69,14 +73,13 @@
         NSString *mainSubject = [[NSString alloc]initWithString:photo.imageMainSubject];
         [self.imageMainSubjects addObject:mainSubject];
     }
-    
-    //load with photo objects
-    [self.collectionViewObjectArray addObjectsFromArray:@[myPhoto01, myPhoto02,myPhoto03,myPhoto04,myPhoto05,myPhoto06,myPhoto07,myPhoto08,myPhoto09,myPhoto10]];
+
     
     //TEMPORARY
     //Hard code grouping category
     
-    self.groupBy = @"subject";
+    self.sortingSet = self.imageLocations;
+    self.sortingSelectorString = @"imageLocation";
     
     //Assign self as collection View data source
     self.basicPhotoCollectionView.dataSource = self;
@@ -102,11 +105,19 @@
 #pragma mark - required UICollectionDatasource Methods
 
 
-// return the quantity of objects in the collection;
+
+// Separate the collection into two sections
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    NSInteger qtySections = [self.sortingSet count];
+    return qtySections;
+}
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    // may eventually require logic to specify qty in each section based on 'section' parameter and a switch case statement
-    
+
+    NSArray *tempArray = [self.sortingSet NSArray];
     
     NSInteger qtyObjectsInArray = [self.collectionViewObjectArray count];
     
