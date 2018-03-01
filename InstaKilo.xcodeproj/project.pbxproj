@@ -13,6 +13,8 @@
 		95C7E00B204710B200AE4DD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95C7E00A204710B200AE4DD0 /* Assets.xcassets */; };
 		95C7E00E204710B200AE4DD0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7E00C204710B200AE4DD0 /* LaunchScreen.storyboard */; };
 		95C7E011204710B200AE4DD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C7E010204710B200AE4DD0 /* main.m */; };
+		95C7E01F2047618C00AE4DD0 /* PhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C7E01E2047618C00AE4DD0 /* PhotoCollectionViewCell.m */; };
+		95C7E0222047630A00AE4DD0 /* MyPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C7E0212047630A00AE4DD0 /* MyPhoto.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,10 @@
 		95C7E00D204710B200AE4DD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		95C7E00F204710B200AE4DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95C7E010204710B200AE4DD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		95C7E01D2047618C00AE4DD0 /* PhotoCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		95C7E01E2047618C00AE4DD0 /* PhotoCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoCollectionViewCell.m; sourceTree = "<group>"; };
+		95C7E0202047630A00AE4DD0 /* MyPhoto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyPhoto.h; sourceTree = "<group>"; };
+		95C7E0212047630A00AE4DD0 /* MyPhoto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyPhoto.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +68,11 @@
 				95C7E002204710B200AE4DD0 /* AppDelegate.m */,
 				95C7E004204710B200AE4DD0 /* ViewController.h */,
 				95C7E005204710B200AE4DD0 /* ViewController.m */,
+				95C7E0202047630A00AE4DD0 /* MyPhoto.h */,
+				95C7E0212047630A00AE4DD0 /* MyPhoto.m */,
 				95C7E007204710B200AE4DD0 /* Main.storyboard */,
+				95C7E01D2047618C00AE4DD0 /* PhotoCollectionViewCell.h */,
+				95C7E01E2047618C00AE4DD0 /* PhotoCollectionViewCell.m */,
 				95C7E00A204710B200AE4DD0 /* Assets.xcassets */,
 				95C7E00C204710B200AE4DD0 /* LaunchScreen.storyboard */,
 				95C7E00F204710B200AE4DD0 /* Info.plist */,
@@ -142,7 +152,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95C7E0222047630A00AE4DD0 /* MyPhoto.m in Sources */,
 				95C7E006204710B200AE4DD0 /* ViewController.m in Sources */,
+				95C7E01F2047618C00AE4DD0 /* PhotoCollectionViewCell.m in Sources */,
 				95C7E011204710B200AE4DD0 /* main.m in Sources */,
 				95C7E003204710B200AE4DD0 /* AppDelegate.m in Sources */,
 			);
