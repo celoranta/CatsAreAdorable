@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		959D43F42048E83200E5ACC7 /* ROFLCat.m in Sources */ = {isa = PBXBuildFile; fileRef = 959D43F32048E83200E5ACC7 /* ROFLCat.m */; };
 		95C7E003204710B200AE4DD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C7E002204710B200AE4DD0 /* AppDelegate.m */; };
 		95C7E006204710B200AE4DD0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C7E005204710B200AE4DD0 /* ViewController.m */; };
 		95C7E009204710B200AE4DD0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7E007204710B200AE4DD0 /* Main.storyboard */; };
@@ -18,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		959D43F22048E83200E5ACC7 /* ROFLCat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ROFLCat.h; sourceTree = "<group>"; };
+		959D43F32048E83200E5ACC7 /* ROFLCat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ROFLCat.m; sourceTree = "<group>"; };
 		95C7DFFE204710B200AE4DD0 /* InstaKilo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstaKilo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95C7E001204710B200AE4DD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		95C7E002204710B200AE4DD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -68,6 +71,8 @@
 				95C7E002204710B200AE4DD0 /* AppDelegate.m */,
 				95C7E004204710B200AE4DD0 /* ViewController.h */,
 				95C7E005204710B200AE4DD0 /* ViewController.m */,
+				959D43F22048E83200E5ACC7 /* ROFLCat.h */,
+				959D43F32048E83200E5ACC7 /* ROFLCat.m */,
 				95C7E0202047630A00AE4DD0 /* MyPhoto.h */,
 				95C7E0212047630A00AE4DD0 /* MyPhoto.m */,
 				95C7E007204710B200AE4DD0 /* Main.storyboard */,
@@ -157,6 +162,7 @@
 				95C7E01F2047618C00AE4DD0 /* PhotoCollectionViewCell.m in Sources */,
 				95C7E011204710B200AE4DD0 /* main.m in Sources */,
 				95C7E003204710B200AE4DD0 /* AppDelegate.m in Sources */,
+				959D43F42048E83200E5ACC7 /* ROFLCat.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,22 +7,15 @@
 //
 
 #import "ViewController.h"
+#import "ROFLCat.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UICollectionView *basicPhotoCollectionView;
 @property (nonatomic) UICollectionViewLayout *basicPhotoLayout;
-@property (nonatomic) NSMutableArray *imageArray;
-@property (nonatomic) NSMutableSet *imageLocations;
-@property (nonatomic) NSMutableSet *imageMainSubjects;
-@property (nonatomic) NSSet *sortingSet;
-@property (nonatomic) NSString *sortingKey;
+@property (nonatomic) NSArray *photoArray;
+@property (nonatomic) NSMutableArray <ROFLCat*> *arrayOfCatPhotos;
+//@property (nonatomic) NSMutableArray <MyPhoto*> *collectionViewObjectArray;
 
-// TESTING
-@property (nonatomic) NSString *sortingKeyResult;
-@property (nonatomic) NSMutableArray *sortingResults;
-
-@property (nonatomic) NSMutableArray <MyPhoto*> *collectionViewObjectArray;
-// @property (strong, nonatomic) CLE Placeholder for photoObject
 
 @end
 
@@ -38,97 +31,76 @@
 #pragma mark - main code body 1
     
     
-    //create photo objects (just one for now
-    
-    MyPhoto *myPhoto01 = [[MyPhoto alloc]initWithImageNameString:@"GwynBirthdayWhiteSpot" imageLocation:@"Port Coquitlam" imageMainSubject:@"Gwyn"];
-    MyPhoto *myPhoto02 = [[MyPhoto alloc]initWithImageNameString:@"GwynInBirchwoodPontoon" imageLocation:@"Birchwood" imageMainSubject:@"Gwyn"];
-    MyPhoto *myPhoto03 = [[MyPhoto alloc]initWithImageNameString:@"GwynNatAndCats"imageLocation:@"Port Coquitlam" imageMainSubject:@"Natalie"];
-    MyPhoto *myPhoto04 = [[MyPhoto alloc]initWithImageNameString:@"GwynNatInNakusp" imageLocation:@"Nakusp" imageMainSubject:@"Natalie"];
-    MyPhoto *myPhoto05 = [[MyPhoto alloc]initWithImageNameString:@"KatieAtHome" imageLocation:@"Port Coquitlam" imageMainSubject:@"Katie"];
-    MyPhoto *myPhoto06 = [[MyPhoto alloc]initWithImageNameString:@"KatiePhotobombingSwans" imageLocation:@"Pitt Meadows" imageMainSubject:@"Katie"];
-    MyPhoto *myPhoto07 = [[MyPhoto alloc]initWithImageNameString:@"NatalieGraceLookingUp" imageLocation:@"Port Coquitlam" imageMainSubject:@"Natalie"];
-    MyPhoto *myPhoto08 = [[MyPhoto alloc]initWithImageNameString:@"NatInBirchwoodPontoon"imageLocation:@"Birchwood" imageMainSubject:@"Gwyn"];
-    MyPhoto *myPhoto09 = [[MyPhoto alloc]initWithImageNameString:@"NatInOwenFrogging" imageLocation:@"Owen" imageMainSubject:@"Natalie"];
-    MyPhoto *myPhoto10 = [[MyPhoto alloc]initWithImageNameString:@"GwynNatAndGrandparents" imageLocation:@"Port Coquitlam" imageMainSubject:@"Gwyn"];
-    
-    
-    
     //create array of collection objects and add to a property
-    self.collectionViewObjectArray = [[NSMutableArray alloc]init];
+    self.arrayOfCatPhotos = [[NSMutableArray alloc]init];
+    
+    // enter the raw URL in string form for a place where lots of cute cats are
+    NSString *catsJsonURLString = @"https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1&api_key=a456f2891dc5ef3b5b8659f67eb14840&tags=cat";
+    
+    // create a URL where lots of cute cats are
+    NSURL *catsJsonURL = [NSURL URLWithString:catsJsonURLString];
+    
+    // create a data task to fetch the JSON file (of cute cats) and wrap it in a block of code to be run outside of the main thread
+    NSURLSessionDataTask *getCatPhotosTask = [[NSURLSession sharedSession]dataTaskWithURL:catsJsonURL
+                                                                        completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                              {
+                                                  NSLog(@"Fetching data from Flickr");
+                                                  if (error != nil)
+                                                  {
+                                                      //error processing... save for now and focus on getting cute cat photos faster
+                                                      return;
+                                                  }
+                                                  
+                                                  // Can interact with the UI to update on progress with dispatch_async(dispatch_get_main_queue() ^{ do stuff (which may or may not include cute cats) here });
+                                                  
+                                                  // parse the data which hopefully includes cat cuteness
+                                                  
+                                                  [self parseResponseData:data];
+                                              }
+                                              ];
+    //^^^^end of NSURLSession method
     
     
-    //load array with photo objects
-    [self.collectionViewObjectArray addObjectsFromArray:@[myPhoto01, myPhoto02,myPhoto03,myPhoto04,myPhoto05,myPhoto06,myPhoto07,myPhoto08,myPhoto09,myPhoto10]];
     
-    
-    //create a set of locations and add to a property
-    self.imageLocations = [[NSMutableSet alloc]init];
-    for(MyPhoto *photo in self.collectionViewObjectArray)
-    {
-        NSString *location = [[NSString alloc]initWithString:photo.imageLocation];
-        [self.imageLocations addObject:location];
-    }
-    
-    //create a set of main subjects and add to a property
-    self.imageMainSubjects = [[NSMutableSet alloc]init];
-    for(MyPhoto *photo in self.collectionViewObjectArray)
-    {
-        NSString *mainSubject = [[NSString alloc]initWithString:photo.imageMainSubject];
-        [self.imageMainSubjects addObject:mainSubject];
-    }
-
-    
-    //TEMPORARY
-    //Hard code grouping category
-    
-    self.sortingSet = self.imageLocations;
-    self.sortingKey = @"imageLocation";
+    //Perform the NSURLSession task in another thread (as defined by the task itself)
+    [getCatPhotosTask resume];
     
     //Assign self as collection View data source
     self.basicPhotoCollectionView.dataSource = self;
     
+    //Will need to eventually assign self as delegate
+    
     //Create a layout object
     [self createAndSetupLayout];
     
-    
-    
-
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-//declare existence of object variable
+
 
 
 #pragma mark - required UICollectionDatasource Methods
 
 
 
-// Separate the collection into two sections
+
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    NSInteger qtySections = [self.sortingSet count];
-    return qtySections;
-}
-
-     
-     
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:self.sortingKey ascending:YES];
-    NSArray *sortDescriptors = @[sortDescriptor];
-    NSArray *sortedArray = [self.collectionViewObjectArray sortedArrayUsingDescriptors:sortDescriptors];
-    
-    [self calculatePhotosInSectionFromSortedArray:sortedArray];
     
     return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    NSInteger qtyPhotos = [self.arrayOfCatPhotos count];
+    
+    
+    return qtyPhotos;
 }
 
 //// The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
@@ -138,98 +110,122 @@
     // Ask collection view to give us a cell that we can use to populate our data
     PhotoCollectionViewCell *cell = [self.basicPhotoCollectionView dequeueReusableCellWithReuseIdentifier:@"basicPhotoCell"
                                                                                              forIndexPath:indexPath];
-
-
+    
+    
     //retrieve a photo object from the array
-    MyPhoto *photoObject = [self.collectionViewObjectArray objectAtIndex:indexPath.row];
-
-     // Cell will display the Image
-    [cell.imageView setImage:photoObject.myPhoto];
+    ROFLCat *photoObject = [self.arrayOfCatPhotos objectAtIndex:indexPath.row];
+    
+    // create a data task to grab the photo from the photo object's URL and wrap it in a block of code to be run outside of the main thread
+    cell.downloadTask = [[NSURLSession sharedSession]downloadTaskWithURL:(photoObject.url) completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSData *data = [NSData dataWithContentsOfURL:location];
+        UIImage *image = [UIImage imageWithData:data];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            cell.imageView.image = image;
+        });
+    
+                                            
+    }];
+    
+    //^^^^end of NSURLSession method
+    
+    [cell.downloadTask resume];
     
     // Text will display the name
-    cell.photoTitleLabel.text = photoObject.photoName;
+    cell.photoTitleLabel.text = photoObject.title;
     
     
-    
-
     return cell;
 }
+
+#pragma mark - Custom methods
+
 // custom CLE method: Create and configure layout
 
 - (UICollectionViewLayout*)createAndSetupLayout
 {
     self.basicPhotoLayout = [[UICollectionViewFlowLayout alloc] init];
     
-//    self.basicPhotoLayout.itemSize = CGSizeMake(100, 100); // Set size of cell
-//    self.basicPhotoLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);  // Padding around each section
-//    self.basicPhotoLayout.minimumInteritemSpacing = 15;  // Minimum horizontal spacing between cells
-//    self.basicPhotoLayout.minimumLineSpacing = 10;  // Minimum vertical spacing
+    //    self.basicPhotoLayout.itemSize = CGSizeMake(100, 100); // Set size of cell
+    //    self.basicPhotoLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);  // Padding around each section
+    //    self.basicPhotoLayout.minimumInteritemSpacing = 15;  // Minimum horizontal spacing between cells
+    //    self.basicPhotoLayout.minimumLineSpacing = 10;  // Minimum vertical spacing
     
     //    // Add this line so headers will appear. If this line is not present, headers will not appear
     //    self.simpleLayout.headerReferenceSize = CGSizeMake(self.collectionView.frame.size.width, 50);
     
     // By default, direction is vertical
-//    self.basicPhotoLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    //    self.basicPhotoLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
-//    // Add this line so headers will appear. If this line is not present, headers will not appear
-//    self.basicPhotoLayout.headerReferenceSize = CGSizeMake(50, self.basicPhotoCollectionView.frame.size.height);
-//
-//    // Add this line so footers will appear. If this line is not present, footers will not appear
-//    self.basicPhotoLayout.footerReferenceSize = CGSizeMake(30, self.basicPhotoCollectionView.frame.size.height);
+    //    // Add this line so headers will appear. If this line is not present, headers will not appear
+    //    self.basicPhotoLayout.headerReferenceSize = CGSizeMake(50, self.basicPhotoCollectionView.frame.size.height);
+    //
+    //    // Add this line so footers will appear. If this line is not present, footers will not appear
+    //    self.basicPhotoLayout.footerReferenceSize = CGSizeMake(30, self.basicPhotoCollectionView.frame.size.height);
     
     return self.basicPhotoLayout;
 }
 
+// code for parsing a json
 
--(NSMutableArray*)calculatePhotosInSectionFromSortedArray:(NSArray*)array
+-(void)parseResponseData:(NSData*)data
 {
-    SEL sortSelector = NSSelectorFromString(self.sortingKey);
-    NSMutableString* currentStringRegister = [[NSMutableString alloc]init];
-    NSMutableString* previousStringRegister = [[NSMutableString alloc]init];
-    NSMutableArray* sortedCount = [[NSMutableArray alloc]init];
-    int i = 1;
-  for(MyPhoto *photo in array)
-  {
-      currentStringRegister = [photo performSelector:sortSelector];
-      if ([currentStringRegister isEqualToString:previousStringRegister]) i++;
-          else
-          {
-              [sortedCount addObject:[NSNumber numberWithInt:i]];
-              i = 1;
-              
-          }
-      [previousStringRegister setString: currentStringRegister];
-
+    
+    // set up a C error type to pass into the serialization method below
+    NSError *error = nil;
+    
+    //convert the returned NSData object (which is an untyped hunk of binary) to a JSON
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    
+    //Check for errors in the serialized JSON file
+    if(error != nil)
+    {
+        // Error-checking code
+        //make sure any communication to the main thread is pushed there properly
+        return;
     }
     
-       return sortedCount;
+    //Let's make sure this thing is a dictionary (....as we do indeed suspect it to be.)
+    
+    if([jsonObject isKindOfClass:[NSDictionary class]])
+    {
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           NSLog(@"Yessir, what you've got there's one o' them dandy new NSDictionaries!");
+                           
+                           //    NSLog(@"Here's what we got!: %@ %@",self.yayCatsRofl,jsonObject );
+                           
+                           
+                           
+                           
+                           //Force cast the binary file into an NSDictionary
+                           NSDictionary *downloadedDictionary = (NSDictionary *)jsonObject;
+                           
+                           //Create a new dictionary with the contents of the @"photos" index
+                           NSDictionary *photoDictionary = downloadedDictionary[@"photos"];
+                           
+                           //Create a new array with the contents of the @"photo" index
+                           NSArray *photoArray = photoDictionary[@"photo"];
+                           
+                           //For every photo listing in the Flickr data
+                           for (NSDictionary *photo in photoArray)
+                           {
+                               
+                               // Send the dictionary representing the Flickr photo obect to a new instance of ROFLCat
+                               // Via an instance method which will populate its properties from the dictionary entries;
+                               ROFLCat *newPhotoObject = [[ROFLCat alloc]initWithDict:photo];
+                               [self.arrayOfCatPhotos addObject:newPhotoObject];
+                               
+                               newPhotoObject.url;
+                               
+                               
+                           }
+                           
+                           [self.basicPhotoCollectionView reloadData];
+                       });
+        return;
+    }
+    
 }
-
-#pragma mark - Roland's code
-
-
-//    NSString *cellId = @"myCell";  // Reuse identifier
-//    //    switch (indexPath.section) {
-//    //        case 0:
-//    //            cellId = @"myCell";
-//    //            break;
-//    //        case 1:
-//    //            cellId = @"myWhiteCell";
-//    //            break;
-//    //        case 2:
-//    //            cellId = @"myGreenCell";
-//    //            break;
-//    //        case 3:
-//    //            cellId = @"myCell";
-//    //            break;
-//    //        case 4:
-//    //        default:
-//    //            cellId = @"myWhiteCell";
-//    //            break;
-//    //    }
-//
-
-
 
 
 @end

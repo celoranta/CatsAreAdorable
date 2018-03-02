@@ -18,4 +18,12 @@
 
 @implementation PhotoCollectionViewCell
 
+-(void)prepareForReuse{
+    [super prepareForReuse];
+    [self.downloadTask cancel];
+    self.imageView.image = nil;
+    
+    
+}
+
 @end

@@ -13,4 +13,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *photoTitleLabel;
 
+
+@property (nonatomic) NSURLSessionDownloadTask *downloadTask;
+
 @end
